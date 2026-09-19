@@ -69,8 +69,8 @@ function setMorphOpen(open) {
 }
 
 function renderMorph() {
-  const stiffness = 0.115;
-  const damping = 0.82;
+  const stiffness = 0.008;
+  const damping = 0.84;
   const distance = morphState.target - morphState.progress;
 
   morphState.velocity = (morphState.velocity + distance * stiffness) * damping;
