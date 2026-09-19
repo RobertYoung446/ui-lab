@@ -1,4 +1,5 @@
 import { initAdvancedExperiments } from "./experiments.js";
+import { initSlingshot } from "./slingshot.js";
 
 const card = document.querySelector("#tilt-card");
 const experimentTabs = [...document.querySelectorAll("[data-experiment-target]")];
@@ -290,4 +291,5 @@ animate();
 updateMorphBounds();
 renderMorph();
 initAdvancedExperiments();
+initSlingshot();
 setExperimentStackExpanded(false);

@@ -12,6 +12,7 @@
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="stylesheet" href="./styles.css" />
     <link rel="stylesheet" href="./experiments.css" />
+    <link rel="stylesheet" href="./slingshot.css" />
   </head>
   <body data-theme="blue">
     <div class="ambient ambient--blue" aria-hidden="true"></div>
@@ -33,9 +34,9 @@
 
     <main id="top" class="workspace">
       <nav class="experiment-nav" aria-label="实验目录">
-        <p class="eyebrow">EXPERIMENTS / 08</p>
+        <p class="eyebrow">EXPERIMENTS / 09</p>
         <button class="experiment-stack-toggle" id="experiment-stack-toggle" type="button" aria-expanded="false" aria-controls="experiment-stack">
-          <span>08</span>
+          <span>09</span>
           <span><strong>交互效果</strong><small>点击展开实验卡片</small></span>
           <i aria-hidden="true">⌄</i>
         </button>
@@ -90,6 +91,9 @@
         <button class="experiment-link" data-theme="violet" type="button" role="tab" aria-selected="false" aria-controls="experiment-tactile" data-experiment-target="experiment-tactile">
           <span class="experiment-link__index">08</span><span><strong>弹性微缩反馈</strong><small>Scale · Depth · Overshoot</small></span>
         </button>
+        <button class="experiment-link" type="button" role="tab" aria-selected="false" aria-controls="experiment-slingshot" data-experiment-target="experiment-slingshot">
+          <span class="experiment-link__index">09</span><span><strong>弹弓感官调节</strong><small>Pull · Launch · Feel</small></span>
+        </button>
         </div>
       </nav>
 
@@ -124,7 +128,7 @@
 
               <div class="card-topline">
                 <span class="chip">LIVE SURFACE</span>
-                <span class="card-index">01 / 08</span>
+                <span class="card-index">01 / 09</span>
               </div>
 
               <div class="card-orbit" aria-hidden="true">
@@ -352,6 +356,46 @@
           <div class="tactile-readout" aria-hidden="true"><span>REST</span><i></i><span id="tactile-scale">1.000</span></div>
         </div>
         <dl class="metrics" aria-label="当前实验参数"><div><dt>按压</dt><dd>Scale 0.96</dd></div><div><dt>释放</dt><dd>Overshoot</dd></div><div><dt>主题</dt><dd>Purple</dd></div></dl>
+      </section>
+      <section class="experiment" id="experiment-slingshot" role="tabpanel" aria-labelledby="slingshot-title" hidden>
+        <div class="experiment__heading">
+          <div><p class="eyebrow">SLINGSHOT CONTROLS / 009</p><h1 id="slingshot-title">拉开，再松手。</h1></div>
+          <p class="instruction">横向拖动微调；拉离轨道，朝目标反方向蓄力，松手发射。</p>
+        </div>
+        <div class="stage stage--slingshot">
+          <div class="sling-console">
+            <div class="sling-console__head"><span>感官调音台</span><span id="sling-status" role="status">拖动圆点试试</span></div>
+            <div class="sling-control" data-sling="color">
+              <div class="sling-label"><label id="sling-color-label">页面色彩</label><output id="sling-color-value">200°</output></div>
+              <div class="sling-surface" role="slider" tabindex="0" aria-labelledby="sling-color-label" aria-valuemin="0" aria-valuemax="360" aria-valuenow="200" aria-orientation="horizontal" aria-describedby="sling-help">
+                <div class="sling-track sling-track--spectrum"></div><div class="sling-fill"></div>
+                <svg class="sling-drawing" aria-hidden="true"><path class="sling-cord"/><path class="sling-flight"/><path class="sling-target"/></svg>
+                <span class="sling-thumb" aria-hidden="true"></span><span class="sling-bubble" aria-hidden="true"></span>
+              </div>
+              <div class="sling-endpoints"><span>红</span><span>黄</span><span>绿</span><span>青</span><span>蓝</span><span>紫</span><span>红</span></div>
+            </div>
+            <div class="sling-control" data-sling="sound">
+              <div class="sling-label"><label id="sling-sound-label">提示音量</label><output id="sling-sound-value">35%</output></div>
+              <div class="sling-surface" role="slider" tabindex="0" aria-labelledby="sling-sound-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="35" aria-orientation="horizontal" aria-describedby="sling-help">
+                <div class="sling-track"></div><div class="sling-fill"></div>
+                <svg class="sling-drawing" aria-hidden="true"><path class="sling-cord"/><path class="sling-flight"/><path class="sling-target"/></svg>
+                <span class="sling-thumb" aria-hidden="true"></span><span class="sling-bubble" aria-hidden="true"></span>
+              </div>
+              <div class="sling-endpoints"><span>静音</span><button id="sling-ding" type="button">试听 · 叮</button><span>响亮</span></div>
+            </div>
+            <div class="sling-control" data-sling="shake">
+              <div class="sling-label"><label id="sling-shake-label">页面震动</label><output id="sling-shake-value">0%</output></div>
+              <div class="sling-surface" role="slider" tabindex="0" aria-labelledby="sling-shake-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-orientation="horizontal" aria-describedby="sling-help">
+                <div class="sling-track"></div><div class="sling-fill"></div>
+                <svg class="sling-drawing" aria-hidden="true"><path class="sling-cord"/><path class="sling-flight"/><path class="sling-target"/></svg>
+                <span class="sling-thumb" aria-hidden="true"></span><span class="sling-bubble" aria-hidden="true"></span>
+              </div>
+              <div class="sling-endpoints"><span>静止</span><button id="sling-stop" type="button">停止震动</button><span>强烈</span></div>
+            </div>
+            <p class="sling-help" id="sling-help">拉得越远，弹得越远。方向键微调，Home / End 到两端，Esc 停止震动。</p>
+          </div>
+        </div>
+        <dl class="metrics" aria-label="当前实验参数"><div><dt>调节</dt><dd>连续数值</dd></div><div><dt>手势</dt><dd>弹弓发射</dd></div><div><dt>反馈</dt><dd>色彩 · 声音 · 震动</dd></div></dl>
       </section>
     </main>
 
