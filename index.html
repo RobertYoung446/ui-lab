@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="./styles.css" />
     <link rel="stylesheet" href="./experiments.css" />
   </head>
-  <body>
+  <body data-theme="blue">
     <div class="ambient ambient--blue" aria-hidden="true"></div>
     <div class="ambient ambient--violet" aria-hidden="true"></div>
 
@@ -32,11 +32,17 @@
     </header>
 
     <main id="top" class="workspace">
-      <nav class="experiment-nav" aria-label="实验目录" role="tablist">
+      <nav class="experiment-nav" aria-label="实验目录">
         <p class="eyebrow">EXPERIMENTS / 08</p>
+        <button class="experiment-stack-toggle" id="experiment-stack-toggle" type="button" aria-expanded="false" aria-controls="experiment-stack">
+          <span>08</span>
+          <span><strong>交互效果</strong><small>点击展开实验卡片</small></span>
+          <i aria-hidden="true">⌄</i>
+        </button>
+        <div class="experiment-stack" id="experiment-stack" role="tablist">
         <button
           class="experiment-link is-active"
-          style="--nav-accent: #55c8ff"
+          data-theme="blue"
           type="button"
           role="tab"
           aria-selected="true"
@@ -52,7 +58,7 @@
 
         <button
           class="experiment-link"
-          style="--nav-accent: #8d68ff"
+          data-theme="purple"
           type="button"
           role="tab"
           aria-selected="false"
@@ -66,24 +72,25 @@
           </span>
         </button>
 
-        <button class="experiment-link" style="--nav-accent: #ff9a45" type="button" role="tab" aria-selected="false" aria-controls="experiment-shared" data-experiment-target="experiment-shared">
+        <button class="experiment-link" data-theme="orange" type="button" role="tab" aria-selected="false" aria-controls="experiment-shared" data-experiment-target="experiment-shared">
           <span class="experiment-link__index">03</span><span><strong>共享元素展开</strong><small>Shared · Scale · Flow</small></span>
         </button>
-        <button class="experiment-link" style="--nav-accent: #63dfa5" type="button" role="tab" aria-selected="false" aria-controls="experiment-chart" data-experiment-target="experiment-chart">
+        <button class="experiment-link" data-theme="green" type="button" role="tab" aria-selected="false" aria-controls="experiment-chart" data-experiment-target="experiment-chart">
           <span class="experiment-link__index">04</span><span><strong>磁吸游标码表</strong><small>Snap · Chart · Ticker</small></span>
         </button>
-        <button class="experiment-link" style="--nav-accent: #f1cf55" type="button" role="tab" aria-selected="false" aria-controls="experiment-sheet" data-experiment-target="experiment-sheet">
+        <button class="experiment-link" data-theme="yellow" type="button" role="tab" aria-selected="false" aria-controls="experiment-sheet" data-experiment-target="experiment-sheet">
           <span class="experiment-link__index">05</span><span><strong>阻尼弹性抽屉</strong><small>Velocity · Rubber · Snap</small></span>
         </button>
-        <button class="experiment-link" style="--nav-accent: linear-gradient(90deg, #ff5f6d, #ffc857, #58e3a7, #59b8ff, #ae72ff)" type="button" role="tab" aria-selected="false" aria-controls="experiment-glow" data-experiment-target="experiment-glow">
+        <button class="experiment-link" data-theme="rainbow" type="button" role="tab" aria-selected="false" aria-controls="experiment-glow" data-experiment-target="experiment-glow">
           <span class="experiment-link__index">06</span><span><strong>动态弥散光晕</strong><small>Conic · Blur · Breathe</small></span>
         </button>
-        <button class="experiment-link" style="--nav-accent: #ff5f6d" type="button" role="tab" aria-selected="false" aria-controls="experiment-cascade" data-experiment-target="experiment-cascade">
+        <button class="experiment-link" data-theme="red" type="button" role="tab" aria-selected="false" aria-controls="experiment-cascade" data-experiment-target="experiment-cascade">
           <span class="experiment-link__index">07</span><span><strong>物理弹簧交错流</strong><small>Stagger · Spring · List</small></span>
         </button>
-        <button class="experiment-link" style="--nav-accent: #9b78ff" type="button" role="tab" aria-selected="false" aria-controls="experiment-tactile" data-experiment-target="experiment-tactile">
+        <button class="experiment-link" data-theme="violet" type="button" role="tab" aria-selected="false" aria-controls="experiment-tactile" data-experiment-target="experiment-tactile">
           <span class="experiment-link__index">08</span><span><strong>弹性微缩反馈</strong><small>Scale · Depth · Overshoot</small></span>
         </button>
+        </div>
       </nav>
 
       <section
@@ -273,7 +280,7 @@
       <section class="experiment experiment--chart" id="experiment-chart" role="tabpanel" aria-labelledby="chart-title" hidden>
         <div class="experiment__heading">
           <div><p class="eyebrow">MAGNETIC DATA / 004</p><h1 id="chart-title">数据跟随指尖吸附</h1></div>
-          <p class="instruction">在折线图上横向拖动，游标自动吸附最近数据点，顶部数值平滑滚动。</p>
+          <p class="instruction">鼠标经过折线图即可连续跟随，靠近节点时产生轻微磁吸，顶部数值同步滚动。</p>
         </div>
         <div class="stage stage--chart">
           <div class="chart-card">
@@ -289,7 +296,7 @@
               <div class="chart-days" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
             </div>
           </div>
-          <div class="gesture-hint" aria-hidden="true"><span class="chart-hint-icon"></span><span>横向滑动</span></div>
+          <div class="gesture-hint" aria-hidden="true"><span class="chart-hint-icon"></span><span>移动鼠标或触摸滑动</span></div>
         </div>
         <dl class="metrics" aria-label="当前实验参数"><div><dt>数据点</dt><dd>7</dd></div><div><dt>吸附</dt><dd>Magnetic</dd></div><div><dt>主题</dt><dd>Green</dd></div></dl>
       </section>

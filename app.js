@@ -3,6 +3,9 @@ import { initAdvancedExperiments } from "./experiments.js";
 const card = document.querySelector("#tilt-card");
 const experimentTabs = [...document.querySelectorAll("[data-experiment-target]")];
 const experiments = [...document.querySelectorAll(".experiment")];
+const experimentNav = document.querySelector(".experiment-nav");
+const experimentStack = document.querySelector("#experiment-stack");
+const experimentStackToggle = document.querySelector("#experiment-stack-toggle");
 const morphStage = document.querySelector("#morph-stage");
 const morphShell = document.querySelector("#morph-shell");
 const morphTrigger = document.querySelector("#morph-trigger");
@@ -40,9 +43,14 @@ const morphState = {
 };
 
 function selectExperiment(targetId) {
+  const selectedTab = experimentTabs.find((tab) => tab.dataset.experimentTarget === targetId);
   experiments.forEach((experiment) => {
     experiment.hidden = experiment.id !== targetId;
   });
+
+  if (selectedTab?.dataset.theme) {
+    document.body.dataset.theme = selectedTab.dataset.theme;
+  }
 
   experimentTabs.forEach((tab) => {
     const selected = tab.dataset.experimentTarget === targetId;
@@ -55,6 +63,12 @@ function selectExperiment(targetId) {
   }
 
   document.dispatchEvent(new CustomEvent("experiment:selected", { detail: { targetId } }));
+}
+
+function setExperimentStackExpanded(expanded) {
+  experimentNav.classList.toggle("is-expanded", expanded);
+  experimentStackToggle.setAttribute("aria-expanded", String(expanded));
+  experimentTabs.forEach((tab) => { tab.tabIndex = expanded ? 0 : -1; });
 }
 
 function updateMorphBounds() {
@@ -198,7 +212,13 @@ card.addEventListener("keyup", () => endInteraction({ pointerId: null }));
 card.addEventListener("blur", () => endInteraction({ pointerId: null }));
 
 experimentTabs.forEach((tab) => {
-  tab.addEventListener("click", () => selectExperiment(tab.dataset.experimentTarget));
+  tab.addEventListener("click", () => {
+    selectExperiment(tab.dataset.experimentTarget);
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      setExperimentStackExpanded(false);
+      experimentStackToggle.focus();
+    }
+  });
   tab.addEventListener("keydown", (event) => {
     if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) return;
     event.preventDefault();
@@ -207,6 +227,14 @@ experimentTabs.forEach((tab) => {
     experimentTabs[nextIndex].focus();
     selectExperiment(experimentTabs[nextIndex].dataset.experimentTarget);
   });
+});
+
+experimentStackToggle.addEventListener("click", () => {
+  setExperimentStackExpanded(!experimentNav.classList.contains("is-expanded"));
+});
+
+experimentStack.addEventListener("click", () => {
+  if (!experimentNav.classList.contains("is-expanded")) setExperimentStackExpanded(true);
 });
 
 morphTrigger.addEventListener("click", () => setMorphOpen(true));
@@ -228,3 +256,4 @@ animate();
 updateMorphBounds();
 renderMorph();
 initAdvancedExperiments();
+setExperimentStackExpanded(false);

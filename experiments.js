@@ -42,7 +42,7 @@ function initMagneticChart() {
   const values = [312, 386, 354, 428, 401, 512, 466];
   const labels = ["MON · 15", "TUE · 16", "WED · 17", "THU · 18", "FRI · 19", "SAT · 20", "SUN · 21"];
   const svgPoints = [[40, 183], [143, 130], [247, 157], [350, 76], [453, 111], [557, 48], [660, 91]];
-  const state = { index: 3, x: 0, y: 0, targetX: 0, targetY: 0, vx: 0, vy: 0, dragging: false };
+  const state = { position: 3, x: 0, y: 0, targetX: 0, targetY: 0, vx: 0, vy: 0, dragging: false };
 
   const tracks = Array.from({ length: 3 }, () => {
     const digit = document.createElement("span");
@@ -66,41 +66,51 @@ function initMagneticChart() {
     ticker.setAttribute("aria-label", `当前数值 ${value}`);
   }
 
-  function pointPixels(index) {
+  function selectPosition(position, immediate = false) {
+    const rawPosition = Math.max(0, Math.min(values.length - 1, position));
+    const nearest = Math.round(rawPosition);
+    const distance = Math.abs(rawPosition - nearest);
+    const magneticPull = Math.max(0, 1 - distance / 0.22) * 0.42;
+    const magneticPosition = rawPosition + (nearest - rawPosition) * magneticPull;
+    const leftIndex = Math.floor(magneticPosition);
+    const rightIndex = Math.min(values.length - 1, leftIndex + 1);
+    const progress = magneticPosition - leftIndex;
+    const svgX = svgPoints[leftIndex][0] + (svgPoints[rightIndex][0] - svgPoints[leftIndex][0]) * progress;
+    const svgY = svgPoints[leftIndex][1] + (svgPoints[rightIndex][1] - svgPoints[leftIndex][1]) * progress;
+    const value = Math.round(values[leftIndex] + (values[rightIndex] - values[leftIndex]) * progress);
     const width = plot.clientWidth || 700;
-    return { x: (svgPoints[index][0] / 700) * width, y: (svgPoints[index][1] / 260) * 255 };
-  }
 
-  function selectPoint(index, immediate = false) {
-    const nextIndex = Math.max(0, Math.min(values.length - 1, index));
-    const point = pointPixels(nextIndex);
-    state.index = nextIndex;
-    state.targetX = point.x;
-    state.targetY = point.y;
+    state.position = magneticPosition;
+    state.targetX = (svgX / 700) * width;
+    state.targetY = (svgY / 260) * 255;
     if (immediate || reducedMotion.matches) {
-      state.x = point.x;
-      state.y = point.y;
+      state.x = state.targetX;
+      state.y = state.targetY;
       state.vx = 0;
       state.vy = 0;
     }
-    setTicker(values[nextIndex]);
-    label.textContent = labels[nextIndex];
-    circles.forEach((circle, circleIndex) => circle.classList.toggle("is-active", circleIndex === nextIndex));
+    setTicker(value);
+    label.textContent = leftIndex === rightIndex
+      ? labels[leftIndex]
+      : `${labels[leftIndex].slice(0, 3)} → ${labels[rightIndex].slice(0, 3)} · ${Math.round(progress * 100)}%`;
+    circles.forEach((circle, circleIndex) => circle.classList.toggle("is-active", Math.abs(circleIndex - magneticPosition) < 0.075));
   }
 
   function selectFromClientX(clientX) {
     const rect = plot.getBoundingClientRect();
     const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    selectPoint(Math.round(ratio * (values.length - 1)));
+    selectPosition(ratio * (values.length - 1));
   }
 
   plot.addEventListener("pointerdown", (event) => {
-    state.dragging = true;
-    plot.setPointerCapture?.(event.pointerId);
+    if (event.pointerType !== "mouse") {
+      state.dragging = true;
+      plot.setPointerCapture?.(event.pointerId);
+    }
     selectFromClientX(event.clientX);
   });
   plot.addEventListener("pointermove", (event) => {
-    if (state.dragging) selectFromClientX(event.clientX);
+    if (event.pointerType === "mouse" || state.dragging) selectFromClientX(event.clientX);
   });
   const endDrag = () => { state.dragging = false; };
   plot.addEventListener("pointerup", endDrag);
@@ -108,7 +118,7 @@ function initMagneticChart() {
   plot.addEventListener("keydown", (event) => {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     event.preventDefault();
-    selectPoint(state.index + (event.key === "ArrowRight" ? 1 : -1));
+    selectPosition(state.position + (event.key === "ArrowRight" ? 0.2 : -0.2));
   });
 
   function animate() {
@@ -121,13 +131,13 @@ function initMagneticChart() {
     requestAnimationFrame(animate);
   }
 
-  window.addEventListener("resize", () => selectPoint(state.index, true));
+  window.addEventListener("resize", () => selectPosition(state.position, true));
   document.addEventListener("experiment:selected", (event) => {
     if (event.detail.targetId === "experiment-chart") {
-      requestAnimationFrame(() => selectPoint(state.index, true));
+      requestAnimationFrame(() => selectPosition(state.position, true));
     }
   });
-  requestAnimationFrame(() => selectPoint(3, true));
+  requestAnimationFrame(() => selectPosition(3, true));
   animate();
 }
 
