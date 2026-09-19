@@ -99,6 +99,7 @@ export function initSlingshot() {
     let pointer = null;
     let gesture;
     let pulled = false;
+    let trajectory = null;
 
     const formatted = () => `${Math.round(value * maximum)}${kind === "color" ? "°" : "%"}`;
     function render() {
@@ -120,6 +121,34 @@ export function initSlingshot() {
     }
     function clearDrawing() {
       [cord, flight, targetMark].forEach(path => path.setAttribute("d", ""));
+      trajectory = null;
+      row.classList.remove("is-flying");
+    }
+    function launch() {
+      // Preview and flight share these exact quadratic Bézier control points.
+      const path = trajectory;
+      const started = performance.now();
+      const duration = 560;
+      row.classList.add("is-flying");
+      cord.setAttribute("d", "");
+      function fly(time) {
+        const t = clamp((time - started) / duration, 0, 1);
+        const u = 1 - t;
+        x = u * u * path.x0 + 2 * u * t * path.cx + t * t * path.x1;
+        y = u * u * path.y0 + 2 * u * t * path.cy;
+        render();
+        if (t < 1) {
+          frame = requestAnimationFrame(fly);
+          return;
+        }
+        clearDrawing();
+        // Only add the small spring response after reaching the predicted endpoint.
+        vx = clamp((path.x1 - path.cx) * .2, -35, 35);
+        vy = 45;
+        previousTime = time;
+        frame = requestAnimationFrame(settle);
+      }
+      frame = requestAnimationFrame(fly);
     }
     function settle(time) {
       const dt = Math.min((time - (previousTime || time - 16)) / 1000, .032);
@@ -145,17 +174,21 @@ export function initSlingshot() {
       const id = pointer;
       pointer = null;
       row.classList.remove("is-dragging");
-      clearDrawing();
       if (cancelled) apply(gesture.value, false);
       if (surface.hasPointerCapture(id)) surface.releasePointerCapture(id);
       status.textContent = cancelled ? "已取消调整" : pulled ? "已发射 · 弹性回落" : "已调整";
       if (reduced.matches) {
+        clearDrawing();
         x = value * width; y = 0; render();
         if (kind === "sound" && !cancelled) void ding(value, true);
         return;
       }
-      vx = pulled ? (value * width - x) * 3 : 0;
-      vy = pulled ? -Math.max(180, Math.abs(y) * 5) : 0;
+      if (pulled && !cancelled && trajectory) {
+        launch();
+        return;
+      }
+      clearDrawing();
+      vx = vy = 0;
       previousTime = 0;
       frame = requestAnimationFrame(settle);
     }
@@ -163,6 +196,7 @@ export function initSlingshot() {
       if (pointer !== null || (event.pointerType === "mouse" && event.button !== 0)) return;
       event.preventDefault();
       cancelAnimationFrame(frame); frame = 0;
+      clearDrawing();
       const rect = surface.getBoundingClientRect();
       width = rect.width;
       const start = clamp(event.clientX - rect.left, 0, width);
@@ -193,7 +227,8 @@ export function initSlingshot() {
       apply(target / width);
       const anchor = gesture.anchor;
       cord.setAttribute("d", `M ${anchor - 8} 32 L ${x} ${32 + y} L ${anchor + 8} 32`);
-      flight.setAttribute("d", `M ${x} ${32 + y} Q ${(x + target) / 2} ${-35 - Math.abs(y) * .45} ${target} 32`);
+      trajectory = { x0:x, y0:y, cx:(x + target) / 2, cy:-67 - Math.abs(y) * .45, x1:target };
+      flight.setAttribute("d", `M ${trajectory.x0} ${32 + trajectory.y0} Q ${trajectory.cx} ${32 + trajectory.cy} ${trajectory.x1} 32`);
       targetMark.setAttribute("d", `M ${target} 24 L ${target} 40`);
       status.textContent = "松手发射";
     });
@@ -207,7 +242,9 @@ export function initSlingshot() {
       else if (["ArrowRight", "ArrowUp", "ArrowLeft", "ArrowDown"].includes(event.key)) next += (["ArrowRight", "ArrowUp"].includes(event.key) ? 1 : -1) * (event.shiftKey ? 10 : 1) / maximum;
       else return;
       event.preventDefault();
+      if (pointer !== null) release(true);
       cancelAnimationFrame(frame); frame = 0;
+      clearDrawing();
       apply(next); x = value * width; y = 0; render();
     });
     const reset = () => {
@@ -218,7 +255,12 @@ export function initSlingshot() {
       clearDrawing(); row.classList.remove("is-dragging"); render();
     };
     new ResizeObserver(() => {
-      width = surface.clientWidth || width;
+      const nextWidth = surface.clientWidth || width;
+      if (nextWidth === width) return;
+      if (pointer !== null) release(true);
+      cancelAnimationFrame(frame); frame = 0;
+      clearDrawing();
+      width = nextWidth;
       if (pointer === null) { x = value * width; y = 0; render(); }
     }).observe(surface);
     controls.push({ kind, reset, getValue:() => value });

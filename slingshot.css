@@ -5,7 +5,7 @@
 .sling-console__head > span:first-child { color:var(--ink); }
 #sling-status { text-align:right; color:var(--theme); }
 .sling-control { position:relative; margin-bottom:38px; }
-.sling-control.is-dragging { z-index:2; }
+.sling-control.is-dragging, .sling-control.is-flying { z-index:2; }
 .sling-label { display:flex; align-items:center; justify-content:space-between; gap:16px; font-size:16px; }
 .sling-label output { font:500 16px/1.4 Consolas,monospace; color:var(--theme); font-variant-numeric:tabular-nums; }
 .sling-surface { position:relative; height:64px; margin:0 12px; cursor:grab; touch-action:none; user-select:none; outline:none; }
@@ -30,7 +30,6 @@
 .sling-endpoints button:focus-visible { outline:2px solid var(--theme); outline-offset:3px; }
 .sling-help { font-size:14px; color:var(--muted); line-height:1.8; margin:4px 0 0; }
 body.sling-shaking > .workspace, body.sling-shaking > .site-header, body.sling-shaking > .ambient { translate:var(--shake-x,0px) var(--shake-y,0px); }
-body.sling-shaking .sling-console { translate:calc(-1 * var(--shake-x,0px)) calc(-1 * var(--shake-y,0px)); }
 @media (max-width:600px) {
   .stage.stage--slingshot { padding:28px 20px; min-height:620px; }
   .sling-console__head { margin-bottom:30px; font-size:13px; }
@@ -38,5 +37,5 @@ body.sling-shaking .sling-console { translate:calc(-1 * var(--shake-x,0px)) calc
   #experiment-slingshot .metrics dd { font-size:12px; }
 }
 @media (prefers-reduced-motion:reduce) {
-  body.sling-shaking > .workspace, body.sling-shaking > .site-header, body.sling-shaking > .ambient, body.sling-shaking .sling-console { translate:none; }
+  body.sling-shaking > .workspace, body.sling-shaking > .site-header, body.sling-shaking > .ambient { translate:none; }
 }
