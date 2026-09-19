@@ -1,3 +1,5 @@
+import { initAdvancedExperiments } from "./experiments.js";
+
 const card = document.querySelector("#tilt-card");
 const experimentTabs = [...document.querySelectorAll("[data-experiment-target]")];
 const experiments = [...document.querySelectorAll(".experiment")];
@@ -51,6 +53,8 @@ function selectExperiment(targetId) {
   if (targetId === "experiment-morph") {
     requestAnimationFrame(updateMorphBounds);
   }
+
+  document.dispatchEvent(new CustomEvent("experiment:selected", { detail: { targetId } }));
 }
 
 function updateMorphBounds() {
@@ -223,3 +227,4 @@ window.addEventListener("resize", updateMorphBounds);
 animate();
 updateMorphBounds();
 renderMorph();
+initAdvancedExperiments();

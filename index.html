@@ -11,6 +11,7 @@
     <title>UI 实验室 · 交互动效</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./experiments.css" />
   </head>
   <body>
     <div class="ambient ambient--blue" aria-hidden="true"></div>
@@ -32,9 +33,10 @@
 
     <main id="top" class="workspace">
       <nav class="experiment-nav" aria-label="实验目录" role="tablist">
-        <p class="eyebrow">EXPERIMENTS / 02</p>
+        <p class="eyebrow">EXPERIMENTS / 08</p>
         <button
           class="experiment-link is-active"
+          style="--nav-accent: #55c8ff"
           type="button"
           role="tab"
           aria-selected="true"
@@ -50,6 +52,7 @@
 
         <button
           class="experiment-link"
+          style="--nav-accent: #8d68ff"
           type="button"
           role="tab"
           aria-selected="false"
@@ -63,10 +66,24 @@
           </span>
         </button>
 
-        <div class="next-slot" aria-label="为后续实验预留的位置">
-          <span class="next-slot__plus" aria-hidden="true">+</span>
-          <span><strong>继续添加</strong><small>下一个实验位置</small></span>
-        </div>
+        <button class="experiment-link" style="--nav-accent: #ff9a45" type="button" role="tab" aria-selected="false" aria-controls="experiment-shared" data-experiment-target="experiment-shared">
+          <span class="experiment-link__index">03</span><span><strong>共享元素展开</strong><small>Shared · Scale · Flow</small></span>
+        </button>
+        <button class="experiment-link" style="--nav-accent: #63dfa5" type="button" role="tab" aria-selected="false" aria-controls="experiment-chart" data-experiment-target="experiment-chart">
+          <span class="experiment-link__index">04</span><span><strong>磁吸游标码表</strong><small>Snap · Chart · Ticker</small></span>
+        </button>
+        <button class="experiment-link" style="--nav-accent: #f1cf55" type="button" role="tab" aria-selected="false" aria-controls="experiment-sheet" data-experiment-target="experiment-sheet">
+          <span class="experiment-link__index">05</span><span><strong>阻尼弹性抽屉</strong><small>Velocity · Rubber · Snap</small></span>
+        </button>
+        <button class="experiment-link" style="--nav-accent: linear-gradient(90deg, #ff5f6d, #ffc857, #58e3a7, #59b8ff, #ae72ff)" type="button" role="tab" aria-selected="false" aria-controls="experiment-glow" data-experiment-target="experiment-glow">
+          <span class="experiment-link__index">06</span><span><strong>动态弥散光晕</strong><small>Conic · Blur · Breathe</small></span>
+        </button>
+        <button class="experiment-link" style="--nav-accent: #ff5f6d" type="button" role="tab" aria-selected="false" aria-controls="experiment-cascade" data-experiment-target="experiment-cascade">
+          <span class="experiment-link__index">07</span><span><strong>物理弹簧交错流</strong><small>Stagger · Spring · List</small></span>
+        </button>
+        <button class="experiment-link" style="--nav-accent: #9b78ff" type="button" role="tab" aria-selected="false" aria-controls="experiment-tactile" data-experiment-target="experiment-tactile">
+          <span class="experiment-link__index">08</span><span><strong>弹性微缩反馈</strong><small>Scale · Depth · Overshoot</small></span>
+        </button>
       </nav>
 
       <section
@@ -227,6 +244,107 @@
           <div><dt>曲线</dt><dd>Fluid Spring</dd></div>
           <div><dt>阻尼</dt><dd>0.82</dd></div>
         </dl>
+      </section>
+
+      <section class="experiment experiment--shared" id="experiment-shared" role="tabpanel" aria-labelledby="shared-title" hidden>
+        <div class="experiment__heading">
+          <div><p class="eyebrow">SHARED ELEMENT / 003</p><h1 id="shared-title">从一张卡片进入故事</h1></div>
+          <p class="instruction">点击 Card，在同一容器与背景上连续放大，进入完整详情视图。</p>
+        </div>
+        <div class="stage stage--shared" id="shared-stage">
+          <div class="stage__grid" aria-hidden="true"></div>
+          <div class="shared-backdrop" aria-hidden="true"></div>
+          <article class="shared-card" id="shared-card">
+            <div class="shared-card__visual" aria-hidden="true"><span class="shared-sun"></span><span class="shared-horizon"></span></div>
+            <div class="shared-card__summary"><p>FIELD NOTE · 03</p><h2>城市余温</h2><span>查看详情 ↗</span></div>
+            <div class="shared-card__detail" id="shared-card-detail" aria-hidden="true">
+              <div><p>SHARED ELEMENT STUDY</p><h2>光线退场后，<br />空间仍保留温度。</h2></div>
+              <p class="shared-card__copy">容器、背景与内容层级沿同一条空间路径展开，让视线不必重新寻找上下文。</p>
+              <div class="shared-card__meta"><span>18:42</span><span>32° N</span><span>ORANGE / 03</span></div>
+            </div>
+            <button class="shared-open" id="shared-open" type="button" aria-label="展开城市余温详情" aria-controls="shared-card-detail" aria-expanded="false"></button>
+            <button class="shared-close" id="shared-close" type="button" aria-label="关闭详情">×</button>
+          </article>
+          <div class="gesture-hint" aria-hidden="true"><span class="shared-hint-icon"></span><span>点击 Card 展开</span></div>
+        </div>
+        <dl class="metrics" aria-label="当前实验参数"><div><dt>转场</dt><dd>Shared Element</dd></div><div><dt>缩放</dt><dd>Continuous</dd></div><div><dt>主题</dt><dd>Orange</dd></div></dl>
+      </section>
+
+      <section class="experiment experiment--chart" id="experiment-chart" role="tabpanel" aria-labelledby="chart-title" hidden>
+        <div class="experiment__heading">
+          <div><p class="eyebrow">MAGNETIC DATA / 004</p><h1 id="chart-title">数据跟随指尖吸附</h1></div>
+          <p class="instruction">在折线图上横向拖动，游标自动吸附最近数据点，顶部数值平滑滚动。</p>
+        </div>
+        <div class="stage stage--chart">
+          <div class="chart-card">
+            <div class="chart-head"><div><p>ACTIVE ENERGY</p><div class="ticker" id="chart-ticker" aria-live="polite" aria-label="当前数值 428"></div></div><div class="chart-unit">KCAL<br /><span id="chart-label">THU · 18</span></div></div>
+            <div class="chart-plot" id="chart-plot" tabindex="0" aria-label="可横向拖动的数据折线图">
+              <svg viewBox="0 0 700 260" role="img" aria-label="七日活动能量折线">
+                <defs><linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#63dfa5" stop-opacity=".35"/><stop offset="1" stop-color="#63dfa5" stop-opacity="0"/></linearGradient></defs>
+                <path class="chart-area" d="M40 183 L143 130 L247 157 L350 76 L453 111 L557 48 L660 91 L660 235 L40 235 Z" />
+                <polyline class="chart-line" points="40,183 143,130 247,157 350,76 453,111 557,48 660,91" />
+                <g class="chart-points"><circle cx="40" cy="183" r="5"/><circle cx="143" cy="130" r="5"/><circle cx="247" cy="157" r="5"/><circle cx="350" cy="76" r="5"/><circle cx="453" cy="111" r="5"/><circle cx="557" cy="48" r="5"/><circle cx="660" cy="91" r="5"/></g>
+              </svg>
+              <div class="chart-cursor" id="chart-cursor" aria-hidden="true"><span></span></div>
+              <div class="chart-days" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+            </div>
+          </div>
+          <div class="gesture-hint" aria-hidden="true"><span class="chart-hint-icon"></span><span>横向滑动</span></div>
+        </div>
+        <dl class="metrics" aria-label="当前实验参数"><div><dt>数据点</dt><dd>7</dd></div><div><dt>吸附</dt><dd>Magnetic</dd></div><div><dt>主题</dt><dd>Green</dd></div></dl>
+      </section>
+
+      <section class="experiment experiment--sheet" id="experiment-sheet" role="tabpanel" aria-labelledby="sheet-title" hidden>
+        <div class="experiment__heading">
+          <div><p class="eyebrow">KINETIC SHEET / 005</p><h1 id="sheet-title">让速度决定落点</h1></div>
+          <p class="instruction">拖动底部抽屉。越界时产生橡皮筋阻力，松手后根据速度吸附锚点。</p>
+        </div>
+        <div class="stage stage--sheet" id="sheet-stage">
+          <div class="sheet-scene" aria-hidden="true"><p>WEEKLY FOCUS</p><strong>08:32</strong><span>保持专注，完成今日节奏。</span></div>
+          <div class="sheet-backdrop" id="sheet-backdrop" aria-hidden="true"></div>
+          <section class="bottom-sheet" id="bottom-sheet" aria-label="可拖动的底部抽屉">
+            <button class="sheet-handle-zone" id="sheet-handle" type="button" aria-label="拖动抽屉"><span class="sheet-handle"></span><small>DRAG</small></button>
+            <div class="sheet-content"><div class="sheet-title-row"><div><p>NEXT SESSION</p><h2>深度工作</h2></div><span>45 min</span></div><div class="sheet-options"><div><span class="sheet-option-icon">01</span><p><strong>屏蔽通知</strong><small>保持当前空间安静</small></p><i></i></div><div><span class="sheet-option-icon">02</span><p><strong>环境声场</strong><small>Brown noise · 32%</small></p><i></i></div></div></div>
+          </section>
+        </div>
+        <dl class="metrics" aria-label="当前实验参数"><div><dt>锚点</dt><dd>3</dd></div><div><dt>预测</dt><dd>Velocity</dd></div><div><dt>主题</dt><dd>Yellow</dd></div></dl>
+      </section>
+
+      <section class="experiment experiment--glow" id="experiment-glow" role="tabpanel" aria-labelledby="glow-title" hidden>
+        <div class="experiment__heading">
+          <div><p class="eyebrow">SPECTRAL BORDER / 006</p><h1 id="glow-title">让边界持续流动</h1></div>
+          <p class="instruction">旋转渐变描边沿 Card 边缘循环，底部弥散背光以不同频率呼吸。</p>
+        </div>
+        <div class="stage stage--glow">
+          <div class="stage__grid" aria-hidden="true"></div>
+          <article class="spectral-card"><div class="spectral-card__inner"><div class="spectral-top"><span>PRISMATIC SIGNAL</span><i></i></div><div class="spectral-orb" aria-hidden="true"><span></span></div><div class="spectral-copy"><p>LIVE SPECTRUM</p><h2>Chromatic<br />resonance.</h2></div><div class="spectral-footer"><span>360° CONIC</span><span>BREATH / 4.8s</span></div></div></article>
+          <div class="gesture-hint" aria-hidden="true"><span class="glow-hint-icon"></span><span>持续动态效果</span></div>
+        </div>
+        <dl class="metrics" aria-label="当前实验参数"><div><dt>描边</dt><dd>Conic</dd></div><div><dt>背光</dt><dd>Breathing</dd></div><div><dt>主题</dt><dd>Rainbow</dd></div></dl>
+      </section>
+
+      <section class="experiment experiment--cascade" id="experiment-cascade" role="tabpanel" aria-labelledby="cascade-title" hidden>
+        <div class="experiment__heading">
+          <div><p class="eyebrow">SPRING CASCADE / 007</p><h1 id="cascade-title">节奏依次向上涌现</h1></div>
+          <p class="instruction">列表项按照交错延迟依次入场，每个子项都带轻微弹性上滑。</p>
+        </div>
+        <div class="stage stage--cascade">
+          <div class="cascade-panel"><div class="cascade-head"><div><p>TODAY / 5 NOTES</p><h2>灵感收件箱</h2></div><button id="cascade-replay" type="button">重新播放 ↻</button></div><ol class="cascade-list" id="cascade-list"><li style="--i:0"><span>01</span><div><strong>可触摸的数字材质</strong><small>INTERACTION · 09:20</small></div><i></i></li><li style="--i:1"><span>02</span><div><strong>让布局保留呼吸</strong><small>LAYOUT · 10:45</small></div><i></i></li><li style="--i:2"><span>03</span><div><strong>曲线比时长更重要</strong><small>MOTION · 12:10</small></div><i></i></li><li style="--i:3"><span>04</span><div><strong>减少视觉层级噪音</strong><small>SYSTEM · 14:32</small></div><i></i></li><li style="--i:4"><span>05</span><div><strong>把反馈放在指尖</strong><small>DETAIL · 16:08</small></div><i></i></li></ol></div>
+        </div>
+        <dl class="metrics" aria-label="当前实验参数"><div><dt>延迟</dt><dd>68ms</dd></div><div><dt>曲线</dt><dd>Spring</dd></div><div><dt>主题</dt><dd>Red</dd></div></dl>
+      </section>
+
+      <section class="experiment experiment--tactile" id="experiment-tactile" role="tabpanel" aria-labelledby="tactile-title" hidden>
+        <div class="experiment__heading">
+          <div><p class="eyebrow">TACTILE BUTTON / 008</p><h1 id="tactile-title">把按压变成触感</h1></div>
+          <p class="instruction">按住按钮产生 0.96 微缩与深度内阴影，释放时通过弹簧轻微超调回弹。</p>
+        </div>
+        <div class="stage stage--tactile">
+          <div class="tactile-rings" aria-hidden="true"><span></span><span></span><span></span></div>
+          <button class="tactile-button" id="tactile-button" type="button"><span class="tactile-button__icon" aria-hidden="true">✦</span><span><strong>确认动作</strong><small>PRESS AND HOLD</small></span><i aria-hidden="true">→</i></button>
+          <div class="tactile-readout" aria-hidden="true"><span>REST</span><i></i><span id="tactile-scale">1.000</span></div>
+        </div>
+        <dl class="metrics" aria-label="当前实验参数"><div><dt>按压</dt><dd>Scale 0.96</dd></div><div><dt>释放</dt><dd>Overshoot</dd></div><div><dt>主题</dt><dd>Purple</dd></div></dl>
       </section>
     </main>
 
