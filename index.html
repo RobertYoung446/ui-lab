@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="一个收集触摸、动效与界面材质实验的交互式 UI 实验室。"
+    />
+    <meta name="theme-color" content="#07090d" />
+    <title>UI 实验室 · 触感卡片</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient--blue" aria-hidden="true"></div>
+    <div class="ambient ambient--violet" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="UI 实验室首页">
+        <span class="brand__mark" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </span>
+        <span>UI 实验室</span>
+      </a>
+
+      <div class="status" aria-label="实验状态：运行中">
+        <span class="status__dot" aria-hidden="true"></span>
+        <span>实验运行中</span>
+      </div>
+    </header>
+
+    <main id="top" class="workspace">
+      <nav class="experiment-nav" aria-label="实验目录">
+        <p class="eyebrow">EXPERIMENTS / 01</p>
+        <button class="experiment-link is-active" type="button" aria-current="page">
+          <span class="experiment-link__index">01</span>
+          <span>
+            <strong>触感透视卡片</strong>
+            <small>Pointer · Spring · Light</small>
+          </span>
+        </button>
+
+        <div class="next-slot" aria-label="为后续实验预留的位置">
+          <span class="next-slot__plus" aria-hidden="true">+</span>
+          <span>
+            <strong>下一个实验</strong>
+            <small>结构已准备好</small>
+          </span>
+        </div>
+      </nav>
+
+      <section class="experiment" aria-labelledby="experiment-title">
+        <div class="experiment__heading">
+          <div>
+            <p class="eyebrow">TOUCH SURFACE / 001</p>
+            <h1 id="experiment-title">跟随你的触摸</h1>
+          </div>
+          <p class="instruction">
+            按住并移动卡片，观察视角与反射光。松手后，它会自然回到原位。
+          </p>
+        </div>
+
+        <div class="stage">
+          <div class="stage__grid" aria-hidden="true"></div>
+
+          <article
+            class="tilt-card"
+            id="tilt-card"
+            tabindex="0"
+            aria-label="可交互的三维透视卡片。按住并拖动来改变倾斜角度。"
+          >
+            <div class="tilt-card__surface">
+              <div class="tilt-card__shine" aria-hidden="true"></div>
+              <div class="tilt-card__grain" aria-hidden="true"></div>
+
+              <div class="card-topline">
+                <span class="chip">LIVE SURFACE</span>
+                <span class="card-index">01 / 08</span>
+              </div>
+
+              <div class="card-orbit" aria-hidden="true">
+                <span class="card-orbit__core"></span>
+                <span class="card-orbit__ring card-orbit__ring--one"></span>
+                <span class="card-orbit__ring card-orbit__ring--two"></span>
+              </div>
+
+              <div class="card-copy">
+                <p>TACTILE STUDY</p>
+                <h2>Light follows<br />your intent.</h2>
+              </div>
+
+              <div class="card-footer">
+                <span>PRESS + MOVE</span>
+                <span class="card-footer__line" aria-hidden="true"></span>
+                <span>SPRING 0.14</span>
+              </div>
+            </div>
+          </article>
+
+          <div class="gesture-hint" aria-hidden="true">
+            <span class="gesture-hint__icon"></span>
+            <span>触摸并移动</span>
+          </div>
+        </div>
+
+        <dl class="metrics" aria-label="当前实验参数">
+          <div>
+            <dt>最大倾角</dt>
+            <dd>14°</dd>
+          </div>
+          <div>
+            <dt>回正方式</dt>
+            <dd>Spring</dd>
+          </div>
+          <div>
+            <dt>输入模式</dt>
+            <dd>Pointer</dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
