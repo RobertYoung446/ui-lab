@@ -69,7 +69,23 @@ function setExperimentStackExpanded(expanded) {
   experimentNav.classList.toggle("is-expanded", expanded);
   experimentStackToggle.setAttribute("aria-expanded", String(expanded));
   experimentStackToggle.querySelector("small").textContent = expanded ? "选择一个实验" : "点击展开实验卡片";
-  experimentTabs.forEach((tab) => { tab.tabIndex = expanded ? 0 : -1; });
+  experimentTabs.forEach((tab) => {
+    tab.tabIndex = expanded ? 0 : -1;
+    if (!expanded) tab.classList.remove("is-nav-pressed", "is-nav-releasing");
+  });
+}
+
+function pressExperimentTab(tab) {
+  if (!experimentNav.classList.contains("is-expanded")) return;
+  tab.classList.remove("is-nav-releasing");
+  tab.classList.add("is-nav-pressed");
+}
+
+function releaseExperimentTab(tab) {
+  if (!tab.classList.contains("is-nav-pressed")) return;
+  tab.classList.remove("is-nav-pressed", "is-nav-releasing");
+  void tab.offsetWidth;
+  tab.classList.add("is-nav-releasing");
 }
 
 function updateMorphBounds() {
@@ -216,11 +232,24 @@ experimentTabs.forEach((tab) => {
   tab.addEventListener("click", () => {
     selectExperiment(tab.dataset.experimentTarget);
     if (window.matchMedia("(max-width: 900px)").matches) {
-      setExperimentStackExpanded(false);
-      experimentStackToggle.focus();
+      window.setTimeout(() => {
+        setExperimentStackExpanded(false);
+        experimentStackToggle.focus();
+      }, 420);
     }
   });
+  tab.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    pressExperimentTab(tab);
+    tab.setPointerCapture?.(event.pointerId);
+  });
+  tab.addEventListener("pointerup", () => releaseExperimentTab(tab));
+  tab.addEventListener("pointercancel", () => releaseExperimentTab(tab));
+  tab.addEventListener("animationend", (event) => {
+    if (event.animationName === "nav-tactile-release") tab.classList.remove("is-nav-releasing");
+  });
   tab.addEventListener("keydown", (event) => {
+    if (["Enter", " "].includes(event.key) && !event.repeat) pressExperimentTab(tab);
     if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) return;
     event.preventDefault();
     const direction = event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : 1;
@@ -228,6 +257,10 @@ experimentTabs.forEach((tab) => {
     experimentTabs[nextIndex].focus();
     selectExperiment(experimentTabs[nextIndex].dataset.experimentTarget);
   });
+  tab.addEventListener("keyup", (event) => {
+    if (["Enter", " "].includes(event.key)) releaseExperimentTab(tab);
+  });
+  tab.addEventListener("blur", () => releaseExperimentTab(tab));
 });
 
 experimentStackToggle.addEventListener("click", () => {

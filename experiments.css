@@ -100,6 +100,7 @@ body {
   transition:
     transform 760ms cubic-bezier(.16,.9,.25,1.16),
     opacity 460ms ease,
+    box-shadow 180ms ease,
     border-color 280ms ease,
     background 280ms ease;
   transition-delay: var(--close-delay, 0ms);
@@ -136,10 +137,25 @@ body {
   left: auto;
   opacity: 1;
   pointer-events: auto;
-  transform: none;
-  animation: stack-card-unfold 720ms cubic-bezier(.16,.9,.25,1.14) both;
+  transform: scale(1);
+  animation: stack-card-unfold 720ms cubic-bezier(.16,.9,.25,1.14) backwards;
   animation-delay: var(--open-delay);
   z-index: auto;
+}
+
+.experiment-nav.is-expanded .experiment-link.is-nav-pressed {
+  transform: scale(.96);
+  animation: none;
+  box-shadow:
+    inset 0 9px 20px rgba(0, 0, 0, .38),
+    inset 0 1px 0 rgba(255, 255, 255, .04),
+    0 6px 18px rgba(0, 0, 0, .2);
+  transition-duration: 90ms, 90ms, 180ms, 180ms, 180ms;
+}
+
+.experiment-nav.is-expanded .experiment-link.is-nav-releasing {
+  animation: nav-tactile-release 540ms cubic-bezier(.18,.86,.24,1.18);
+  animation-delay: 0ms;
 }
 
 .experiment-link.is-active {
@@ -176,6 +192,13 @@ body {
   0% { opacity: 0; transform: translateY(-20px) scale(.965); }
   68% { opacity: 1; transform: translateY(4px) scale(1.006); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes nav-tactile-release {
+  0% { transform: scale(.96); }
+  48% { transform: scale(1.035); }
+  72% { transform: scale(.992); }
+  100% { transform: scale(1); }
 }
 
 .stage--shared,
@@ -719,7 +742,8 @@ body {
   .spectral-card::before,
   .spectral-orb::before,
   .cascade-list.is-playing li,
-  .experiment-nav.is-expanded .experiment-link { animation: none; }
+  .experiment-nav.is-expanded .experiment-link,
+  .experiment-nav.is-expanded .experiment-link.is-nav-releasing { animation: none; }
   .shared-card,
   .shared-card__visual,
   .shared-backdrop { transition-duration: 1ms; }
