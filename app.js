@@ -68,6 +68,7 @@ function selectExperiment(targetId) {
 function setExperimentStackExpanded(expanded) {
   experimentNav.classList.toggle("is-expanded", expanded);
   experimentStackToggle.setAttribute("aria-expanded", String(expanded));
+  experimentStackToggle.querySelector("small").textContent = expanded ? "选择一个实验" : "点击展开实验卡片";
   experimentTabs.forEach((tab) => { tab.tabIndex = expanded ? 0 : -1; });
 }
 
