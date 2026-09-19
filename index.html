@@ -8,7 +8,7 @@
       content="一个收集触摸、动效与界面材质实验的交互式 UI 实验室。"
     />
     <meta name="theme-color" content="#07090d" />
-    <title>UI 实验室 · 触感卡片</title>
+    <title>UI 实验室 · 交互动效</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -31,9 +31,16 @@
     </header>
 
     <main id="top" class="workspace">
-      <nav class="experiment-nav" aria-label="实验目录">
-        <p class="eyebrow">EXPERIMENTS / 01</p>
-        <button class="experiment-link is-active" type="button" aria-current="page">
+      <nav class="experiment-nav" aria-label="实验目录" role="tablist">
+        <p class="eyebrow">EXPERIMENTS / 02</p>
+        <button
+          class="experiment-link is-active"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="experiment-tilt"
+          data-experiment-target="experiment-tilt"
+        >
           <span class="experiment-link__index">01</span>
           <span>
             <strong>触感透视卡片</strong>
@@ -41,16 +48,33 @@
           </span>
         </button>
 
+        <button
+          class="experiment-link"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="experiment-morph"
+          data-experiment-target="experiment-morph"
+        >
+          <span class="experiment-link__index">02</span>
+          <span>
+            <strong>流体胶囊形变</strong>
+            <small>Fluid · Morph · Damping</small>
+          </span>
+        </button>
+
         <div class="next-slot" aria-label="为后续实验预留的位置">
           <span class="next-slot__plus" aria-hidden="true">+</span>
-          <span>
-            <strong>下一个实验</strong>
-            <small>结构已准备好</small>
-          </span>
+          <span><strong>继续添加</strong><small>下一个实验位置</small></span>
         </div>
       </nav>
 
-      <section class="experiment" aria-labelledby="experiment-title">
+      <section
+        class="experiment"
+        id="experiment-tilt"
+        role="tabpanel"
+        aria-labelledby="experiment-title"
+      >
         <div class="experiment__heading">
           <div>
             <p class="eyebrow">TOUCH SURFACE / 001</p>
@@ -117,6 +141,91 @@
             <dt>输入模式</dt>
             <dd>Pointer</dd>
           </div>
+        </dl>
+      </section>
+
+      <section
+        class="experiment experiment--morph"
+        id="experiment-morph"
+        role="tabpanel"
+        aria-labelledby="morph-title"
+        hidden
+      >
+        <div class="experiment__heading">
+          <div>
+            <p class="eyebrow">FLUID GEOMETRY / 002</p>
+            <h1 id="morph-title">让形态自然生长</h1>
+          </div>
+          <p class="instruction">
+            点击胶囊展开面板。尺寸、圆角与内容层级共用一条高阻尼流体曲线。
+          </p>
+        </div>
+
+        <div class="stage stage--morph" id="morph-stage">
+          <div class="stage__grid" aria-hidden="true"></div>
+          <div class="morph-field" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+
+          <div class="morph-shell" id="morph-shell">
+            <div class="morph-shell__glow" aria-hidden="true"></div>
+
+            <button
+              class="morph-trigger"
+              id="morph-trigger"
+              type="button"
+              aria-expanded="false"
+              aria-controls="morph-panel-content"
+            >
+              <span class="morph-trigger__orb" aria-hidden="true"></span>
+              <span>打开控制面板</span>
+              <span class="morph-trigger__arrow" aria-hidden="true">↗</span>
+            </button>
+
+            <div class="morph-panel" id="morph-panel-content" aria-hidden="true" inert>
+              <div class="morph-panel__header">
+                <div>
+                  <p>FOCUS MODE</p>
+                  <h2>创作空间</h2>
+                </div>
+                <button class="morph-close" id="morph-close" type="button" aria-label="关闭面板">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                </button>
+              </div>
+
+              <div class="morph-panel__body">
+                <div class="morph-progress" aria-hidden="true">
+                  <span class="morph-progress__ring"></span>
+                  <strong>72</strong>
+                  <small>FLOW</small>
+                </div>
+                <div class="morph-details">
+                  <p>当前曲线</p>
+                  <strong>High damping</strong>
+                  <div class="morph-wave" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="morph-panel__footer">
+                <span><i class="morph-status-dot"></i> 动画已同步</span>
+                <span>FLUID / 0.82</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="gesture-hint" aria-hidden="true">
+            <span class="morph-hint-icon"></span>
+            <span>点击切换形态</span>
+          </div>
+        </div>
+
+        <dl class="metrics" aria-label="当前实验参数">
+          <div><dt>形态</dt><dd>Capsule → Panel</dd></div>
+          <div><dt>曲线</dt><dd>Fluid Spring</dd></div>
+          <div><dt>阻尼</dt><dd>0.82</dd></div>
         </dl>
       </section>
     </main>

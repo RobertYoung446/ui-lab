@@ -1,4 +1,11 @@
 const card = document.querySelector("#tilt-card");
+const experimentTabs = [...document.querySelectorAll("[data-experiment-target]")];
+const experiments = [...document.querySelectorAll(".experiment")];
+const morphStage = document.querySelector("#morph-stage");
+const morphShell = document.querySelector("#morph-shell");
+const morphTrigger = document.querySelector("#morph-trigger");
+const morphClose = document.querySelector("#morph-close");
+const morphPanel = document.querySelector("#morph-panel-content");
 
 const state = {
   active: false,
@@ -19,6 +26,83 @@ const MAX_TILT = 14;
 const FOLLOW = 0.22;
 const SPRING = 0.105;
 const DAMPING = 0.78;
+
+const morphState = {
+  progress: 0,
+  target: 0,
+  velocity: 0,
+  startWidth: 186,
+  startHeight: 58,
+  endWidth: 500,
+  endHeight: 360,
+};
+
+function selectExperiment(targetId) {
+  experiments.forEach((experiment) => {
+    experiment.hidden = experiment.id !== targetId;
+  });
+
+  experimentTabs.forEach((tab) => {
+    const selected = tab.dataset.experimentTarget === targetId;
+    tab.classList.toggle("is-active", selected);
+    tab.setAttribute("aria-selected", String(selected));
+  });
+
+  if (targetId === "experiment-morph") {
+    requestAnimationFrame(updateMorphBounds);
+  }
+}
+
+function updateMorphBounds() {
+  const availableWidth = Math.max(280, morphStage.clientWidth - 64);
+  morphState.endWidth = Math.min(500, availableWidth);
+  morphState.endHeight = morphStage.clientWidth < 520 ? 350 : 360;
+}
+
+function setMorphOpen(open) {
+  morphState.target = open ? 1 : 0;
+  morphShell.classList.toggle("is-opening", open);
+  morphShell.classList.toggle("is-closing", !open);
+  morphTrigger.setAttribute("aria-expanded", String(open));
+  morphPanel.setAttribute("aria-hidden", String(!open));
+  morphPanel.inert = !open;
+}
+
+function renderMorph() {
+  const stiffness = 0.115;
+  const damping = 0.82;
+  const distance = morphState.target - morphState.progress;
+
+  morphState.velocity = (morphState.velocity + distance * stiffness) * damping;
+  morphState.progress += morphState.velocity;
+
+  if (Math.abs(distance) < 0.0005 && Math.abs(morphState.velocity) < 0.0005) {
+    morphState.progress = morphState.target;
+    morphState.velocity = 0;
+  }
+
+  const p = Math.min(1.035, Math.max(-0.035, morphState.progress));
+  const visualP = Math.min(1, Math.max(0, p));
+  const width = morphState.startWidth + (morphState.endWidth - morphState.startWidth) * p;
+  const height = morphState.startHeight + (morphState.endHeight - morphState.startHeight) * p;
+  const radius = 29 + (32 - 29) * visualP;
+  const pulse = Math.min(1, Math.abs(morphState.velocity) * 13);
+
+  morphShell.style.setProperty("--morph-width", `${width.toFixed(2)}px`);
+  morphShell.style.setProperty("--morph-height", `${height.toFixed(2)}px`);
+  morphShell.style.setProperty("--morph-radius", `${radius.toFixed(2)}px`);
+  morphShell.style.setProperty("--morph-open", visualP.toFixed(4));
+  morphShell.style.setProperty("--morph-pulse", pulse.toFixed(4));
+
+  const settledOpen = morphState.target === 1 && morphState.progress > 0.995 && Math.abs(morphState.velocity) < 0.005;
+  const settledClosed = morphState.target === 0 && morphState.progress < 0.005 && Math.abs(morphState.velocity) < 0.005;
+  morphShell.classList.toggle("is-open", settledOpen);
+
+  if (settledOpen) morphShell.classList.remove("is-opening");
+  if (settledClosed) morphShell.classList.remove("is-closing");
+
+  requestAnimationFrame(renderMorph);
+}
 
 function updateTarget(clientX, clientY) {
   const rect = card.getBoundingClientRect();
@@ -109,4 +193,33 @@ card.addEventListener("keydown", (event) => {
 card.addEventListener("keyup", () => endInteraction({ pointerId: null }));
 card.addEventListener("blur", () => endInteraction({ pointerId: null }));
 
+experimentTabs.forEach((tab) => {
+  tab.addEventListener("click", () => selectExperiment(tab.dataset.experimentTarget));
+  tab.addEventListener("keydown", (event) => {
+    if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) return;
+    event.preventDefault();
+    const direction = event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : 1;
+    const nextIndex = (experimentTabs.indexOf(tab) + direction + experimentTabs.length) % experimentTabs.length;
+    experimentTabs[nextIndex].focus();
+    selectExperiment(experimentTabs[nextIndex].dataset.experimentTarget);
+  });
+});
+
+morphTrigger.addEventListener("click", () => setMorphOpen(true));
+morphClose.addEventListener("click", () => {
+  setMorphOpen(false);
+  window.setTimeout(() => morphTrigger.focus(), 180);
+});
+
+morphShell.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && morphState.target === 1) {
+    setMorphOpen(false);
+    morphTrigger.focus();
+  }
+});
+
+window.addEventListener("resize", updateMorphBounds);
+
 animate();
+updateMorphBounds();
+renderMorph();
